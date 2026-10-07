@@ -1,0 +1,7 @@
+{
+  "cv_auc": 0.9316,
+  "cv_f1_class1": 0.7374,
+  "cv_recall_class1": 0.6877,
+  "cv_precision_class1": 0.7948,
+  "n_rows": 15000
+}
