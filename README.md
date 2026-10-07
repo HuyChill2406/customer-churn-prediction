@@ -392,7 +392,7 @@ docker run -p 8000:7860 churn-api          # mở http://127.0.0.1:8000/docs
 │   └── metrics.json            # chỉ số cross-validation
 ├── notebooks/
 │   └── Customer_Churn.ipynb    # EDA, feature engineering, so sánh mô hình
-├── data/                   # train.csv, test.csv, sample_submission.csv
+├── data/                   # train.csv, test.csv
 ├── assets/
 │   ├── results.png             # ROC curve + feature importance
 │   ├── shap_beeswarm.png       # SHAP toàn cục
@@ -789,7 +789,7 @@ docker run -p 8000:7860 churn-api          # open http://127.0.0.1:8000/docs
 │   └── metrics.json            # cross-validation metrics
 ├── notebooks/
 │   └── Customer_Churn.ipynb    # EDA, feature engineering, model comparison
-├── data/                   # train.csv, test.csv, sample_submission.csv
+├── data/                   # train.csv, test.csv
 ├── assets/
 │   ├── results.png             # ROC curve + feature importance
 │   ├── shap_beeswarm.png       # global SHAP
