@@ -2,7 +2,7 @@
 
 > LightGBM · FastAPI · Docker · SHAP · 5-fold CV ROC-AUC **0.932**
 
-**🔗 Live demo:** `https://<YOUR-RENDER-URL>/docs` &nbsp;
+**🔗 Live demo (web app):** [https://customer-churn-prediction-api-mb9k.onrender.com](https://customer-churn-prediction-api-mb9k.onrender.com) · **API docs:** [/docs](https://customer-churn-prediction-api-mb9k.onrender.com/docs) &nbsp;_(free tier: the first request after inactivity can take ~1 minute / bản miễn phí: request đầu tiên sau thời gian không dùng có thể mất ~1 phút)_
 
 **Language / Ngôn ngữ:** [🇻🇳 Tiếng Việt](#vi) · [🇬🇧 English](#en)
 
@@ -24,12 +24,12 @@
 | **Kết quả** | ROC-AUC **0,932**, F1 (churn) 0,737, Precision 0,795, Recall 0,688 (5-fold CV) |
 | **Giá trị nghiệp vụ** | Liên hệ 20 % khách rủi ro cao nhất → bắt được **~74 % khách thực sự rời đi** (gấp 3,7 lần chọn ngẫu nhiên) |
 | **Yếu tố chính** | Số sản phẩm đang dùng, tuổi, có hoạt động hay không, quốc gia (Germany), giới tính |
-| **Triển khai** | FastAPI + Docker, có Swagger UI tại `/docs` |
+| **Triển khai** | FastAPI + Docker: giao diện web tại `/`, Swagger UI tại `/docs` |
 
 **Chạy thử nhanh:**
 ```bash
 pip install -r requirements.txt
-uvicorn api:app --reload        # mở http://127.0.0.1:8000/docs
+uvicorn api:app --reload        # mở http://127.0.0.1:8000
 ```
 
 ## Mục lục
@@ -266,7 +266,7 @@ Phần này trả lời: *mô hình dựa vào đâu để dự đoán?* SHAP (S
 
 ![SHAP waterfall](assets/shap_waterfall.png)
 
-Đây là khách trong ví dụ `curl` ở mục 8 (CreditScore 380, Germany, Male, 43 tuổi, 3 năm gắn bó, số dư 150.000, 2 sản phẩm, không có thẻ tín dụng, không hoạt động, lương 100.000). Mô hình bắt đầu từ giá trị cơ sở −2,535 (≈ 7,3 % xác suất, mức trung bình của toàn tập) rồi cộng/trừ đóng góp từng đặc trưng:
+Đây là khách trong ví dụ `curl` ở mục 8 (CreditScore 380, Germany, Male, 43 tuổi, 3 năm gắn bó, số dư 150.000, 2 sản phẩm, không có thẻ tín dụng, không hoạt động, lương 100.000). Mô hình bắt đầu từ giá trị cơ sở −2,535 (tương đương ≈ 7,3 % xác suất; đây là trung bình log-odds của mô hình, không phải tỉ lệ churn trung bình 20,4 %) rồi cộng/trừ đóng góp từng đặc trưng:
 - **Tuổi 43** đẩy mạnh nhất về phía rời đi (+1,71), cùng với **không hoạt động** (+0,68) và **số dư 150.000** (+0,46).
 - **Có 2 sản phẩm** kéo ngược lại gần như tương đương (−1,25).
 - Kết quả cuối −0,976 → **xác suất 27,4 %**, dưới ngưỡng 0,5 nên `high_risk = false`.
@@ -327,15 +327,17 @@ Tinh chỉnh siêu tham số (ví dụ Optuna), hiệu chỉnh xác suất, ch�
 
 | Phương thức | Endpoint | Mô tả |
 |---|---|---|
+| GET | `/` | Giao diện web: nhập thông tin khách hàng và xem dự đoán + giải thích |
 | GET | `/health` | Kiểm tra trạng thái |
 | POST | `/predict` | Chấm điểm một khách hàng |
 | POST | `/predict_batch` | Chấm điểm một danh sách khách hàng |
-| GET | `/docs` | Giao diện Swagger UI |
+| POST | `/explain` | Giải thích một dự đoán (đóng góp SHAP của từng đặc trưng) |
+| GET | `/docs` | Swagger UI (dành cho lập trình viên) |
 
 Cả hai endpoint dự đoán đều nhận tham số tùy chọn `?threshold=0.5`.
 
 ```bash
-curl -X POST "https://<YOUR-RENDER-URL>/predict" \
+curl -X POST "https://customer-churn-prediction-api-mb9k.onrender.com/predict" \
   -H "Content-Type: application/json" \
   -d '{
     "CreditScore": 380, "Geography": "Germany", "Gender": "Male", "Age": 43,
@@ -369,13 +371,13 @@ Dữ liệu không hợp lệ trả về HTTP 422 kèm giải thích.
 ```bash
 pip install -r requirements.txt
 python train.py --train data/train.csv     # tùy chọn: huấn luyện lại, ghi ra model/churn_pipeline.joblib
-uvicorn api:app --reload                   # mở http://127.0.0.1:8000/docs
+uvicorn api:app --reload                   # mở http://127.0.0.1:8000
 ```
 
 **Chạy bằng Docker**
 ```bash
 docker build -t churn-api .
-docker run -p 8000:7860 churn-api          # mở http://127.0.0.1:8000/docs
+docker run -p 8000:7860 churn-api          # mở http://127.0.0.1:8000
 ```
 
 **Triển khai:** repository có thể deploy nguyên trạng lên bất kỳ host Docker nào (bản demo chạy trên gói miễn phí của Render; container đọc biến `PORT`).
@@ -385,14 +387,14 @@ docker run -p 8000:7860 churn-api          # mở http://127.0.0.1:8000/docs
 ## 10. Cấu trúc repository
 
 ```
-├── api.py                  # dịch vụ FastAPI
+├── api.py                  # dịch vụ FastAPI + giao diện web
 ├── train.py                # huấn luyện lại mô hình và báo cáo chỉ số CV
 ├── model/
 │   ├── churn_pipeline.joblib   # pipeline đã huấn luyện (tiền xử lý + LightGBM)
 │   └── metrics.json            # chỉ số cross-validation
 ├── notebooks/
 │   └── Customer_Churn.ipynb    # EDA, feature engineering, so sánh mô hình
-├── data/                   # train.csv, test.csv
+├── data/                   # train.csv, test.csv, sample_submission.csv
 ├── assets/
 │   ├── results.png             # ROC curve + feature importance
 │   ├── shap_beeswarm.png       # SHAP toàn cục
@@ -421,12 +423,12 @@ docker run -p 8000:7860 churn-api          # mở http://127.0.0.1:8000/docs
 | **Results** | ROC-AUC **0.932**, F1 (churn) 0.737, Precision 0.795, Recall 0.688 (5-fold CV) |
 | **Business value** | Contacting the top 20 % highest-risk customers catches **~74 % of customers who actually leave** (3.7× better than random) |
 | **Key drivers** | Number of products, age, activity status, country (Germany), gender |
-| **Deployment** | FastAPI + Docker, with Swagger UI at `/docs` |
+| **Deployment** | FastAPI + Docker: web app at `/`, Swagger UI at `/docs` |
 
 **Quick try:**
 ```bash
 pip install -r requirements.txt
-uvicorn api:app --reload        # open http://127.0.0.1:8000/docs
+uvicorn api:app --reload        # open http://127.0.0.1:8000
 ```
 
 ## Contents
@@ -663,7 +665,7 @@ This section answers: *what does the model rely on?* SHAP (SHapley Additive exPl
 
 ![SHAP waterfall](assets/shap_waterfall.png)
 
-This is the customer from the `curl` example in section 8 (CreditScore 380, Germany, Male, age 43, tenure 3, balance 150,000, 2 products, no credit card, inactive, salary 100,000). The model starts from a baseline of −2.535 (≈ 7.3 % probability, the dataset average) and adds each feature's contribution:
+This is the customer from the `curl` example in section 8 (CreditScore 380, Germany, Male, age 43, tenure 3, balance 150,000, 2 products, no credit card, inactive, salary 100,000). The model starts from a baseline of −2.535 (equivalent to ≈ 7.3 % probability; this is the model's average log-odds, not the 20.4 % average churn rate) and adds each feature's contribution:
 - **Age 43** is the strongest push toward leaving (+1.71), followed by **being inactive** (+0.68) and a **balance of 150,000** (+0.46).
 - **Holding 2 products** pulls back almost as strongly (−1.25).
 - The final value is −0.976 → **27.4 % probability**, below the 0.5 threshold, so `high_risk = false`.
@@ -724,15 +726,17 @@ Hyper-parameter tuning (e.g. Optuna), probability calibration, cost-based thresh
 
 | Method | Endpoint | Description |
 |---|---|---|
+| GET | `/` | Web app: enter customer details and see the prediction + explanation |
 | GET | `/health` | Health check |
 | POST | `/predict` | Score one customer |
 | POST | `/predict_batch` | Score a list of customers |
-| GET | `/docs` | Interactive Swagger UI |
+| POST | `/explain` | Explain one prediction (per-feature SHAP contributions) |
+| GET | `/docs` | Swagger UI (for developers) |
 
 Both prediction endpoints accept an optional `?threshold=0.5` query parameter.
 
 ```bash
-curl -X POST "https://<YOUR-RENDER-URL>/predict" \
+curl -X POST "https://customer-churn-prediction-api-mb9k.onrender.com/predict" \
   -H "Content-Type: application/json" \
   -d '{
     "CreditScore": 380, "Geography": "Germany", "Gender": "Male", "Age": 43,
@@ -766,13 +770,13 @@ Invalid input returns HTTP 422 with an explanation.
 ```bash
 pip install -r requirements.txt
 python train.py --train data/train.csv     # optional: re-train, writes model/churn_pipeline.joblib
-uvicorn api:app --reload                   # open http://127.0.0.1:8000/docs
+uvicorn api:app --reload                   # open http://127.0.0.1:8000
 ```
 
 **With Docker**
 ```bash
 docker build -t churn-api .
-docker run -p 8000:7860 churn-api          # open http://127.0.0.1:8000/docs
+docker run -p 8000:7860 churn-api          # open http://127.0.0.1:8000
 ```
 
 **Deployment:** the repository deploys as-is to any Docker host (the live demo runs on Render's free tier; the container reads the `PORT` variable).
@@ -782,14 +786,14 @@ docker run -p 8000:7860 churn-api          # open http://127.0.0.1:8000/docs
 ## 10. Repository structure
 
 ```
-├── api.py                  # FastAPI service
+├── api.py                  # FastAPI service + web UI
 ├── train.py                # re-trains the model and reports CV metrics
 ├── model/
 │   ├── churn_pipeline.joblib   # trained pipeline (preprocessing + LightGBM)
 │   └── metrics.json            # cross-validation metrics
 ├── notebooks/
 │   └── Customer_Churn.ipynb    # EDA, feature engineering, model comparison
-├── data/                   # train.csv, test.csv
+├── data/                   # train.csv, test.csv, sample_submission.csv
 ├── assets/
 │   ├── results.png             # ROC curve + feature importance
 │   ├── shap_beeswarm.png       # global SHAP
@@ -801,3 +805,4 @@ docker run -p 8000:7860 churn-api          # open http://127.0.0.1:8000/docs
 **Tech stack:** Python · pandas · scikit-learn · LightGBM · FastAPI · Uvicorn · Docker (SHAP analysis: `shap`, `matplotlib`)
 
 ---
+_Group 9 project._
