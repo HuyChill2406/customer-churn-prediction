@@ -290,9 +290,6 @@ HTML = r"""<!DOCTYPE html>
   </div>
 
   <p class="note" data-i18n="disclaimer"></p>
-  <footer>
-    <a href="/docs">API docs (Swagger)</a> · <span data-i18n="footer"></span>
-  </footer>
 </div>
 
 <script>
