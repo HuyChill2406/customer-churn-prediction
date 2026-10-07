@@ -2,7 +2,7 @@
 
 > LightGBM · FastAPI · Docker · SHAP · 5-fold CV ROC-AUC **0.932**
 
-**🔗 Live demo (web app):** [https://customer-churn-prediction-api-mb9k.onrender.com](https://customer-churn-prediction-api-mb9k.onrender.com) · **API docs:** [/docs](https://customer-churn-prediction-api-mb9k.onrender.com/docs) &nbsp;_(free tier: the first request after inactivity can take ~1 minute / bản miễn phí: request đầu tiên sau thời gian không dùng có thể mất ~1 phút)_
+**🔗 Live demo (web app):** [https://customer-churn-prediction-api-mb9k.onrender.com](https://customer-churn-prediction-api-mb9k.onrender.com) ·
 
 **Language / Ngôn ngữ:** [🇻🇳 Tiếng Việt](#vi) · [🇬🇧 English](#en)
 
