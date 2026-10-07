@@ -316,7 +316,7 @@ const I18N = {
     whyDesc:"Mức đóng góp của từng yếu tố (SHAP). Thanh đỏ làm tăng nguy cơ rời đi, thanh xanh làm giảm.",
     up:"tăng nguy cơ", dn:"giảm nguy cơ",
     disclaimer:"Lưu ý: mô hình huấn luyện trên dữ liệu tổng hợp (Kaggle) nên chỉ mang tính minh họa, không dùng để ra quyết định thực tế. Phần giải thích cho biết mô hình dùng yếu tố nào, không chứng minh quan hệ nhân quả.",
-    footer:"Group 9 · Customer Churn Prediction",
+    footer:"Nam Huy · Customer Churn Prediction",
     err:"Không gọi được API", errInput:"Dữ liệu chưa hợp lệ. Hãy kiểm tra lại các ô."
   },
   en:{
@@ -338,7 +338,7 @@ const I18N = {
     whyDesc:"Contribution of each factor (SHAP). Red bars raise the risk of leaving, green bars lower it.",
     up:"raises risk", dn:"lowers risk",
     disclaimer:"Note: the model is trained on synthetic data (Kaggle), so this is a demo and not for real decisions. The explanation shows what the model uses, not cause and effect.",
-    footer:"Group 9 · Customer Churn Prediction",
+    footer:"Nam Huy · Customer Churn Prediction",
     err:"Could not reach the API", errInput:"Invalid input. Please check the fields."
   }
 };
