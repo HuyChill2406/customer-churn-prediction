@@ -318,6 +318,9 @@ Với mỗi khách: `baseline + tổng shap_values` = log-odds; áp hàm sigmoid
 - Chưa tinh chỉnh siêu tham số, chưa hiệu chỉnh xác suất (calibration).
 - Demo công khai không có xác thực và chạy trên gói miễn phí (khởi động nguội ≈ 1 phút).
 
+### Kết quả
+<img width="713" height="286" alt="image" src="https://github.com/user-attachments/assets/a427903a-c816-457e-9c7c-88d05d6059d0" />
+
 ### Hướng phát triển
 Tinh chỉnh siêu tham số (ví dụ Optuna), hiệu chỉnh xác suất, chọn ngưỡng theo chi phí – lợi ích thực tế, kiểm tra trên dữ liệu thực, thêm giám sát dữ liệu/mô hình và xác thực cho API.
 
