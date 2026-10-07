@@ -801,4 +801,3 @@ docker run -p 8000:7860 churn-api          # open http://127.0.0.1:8000/docs
 **Tech stack:** Python · pandas · scikit-learn · LightGBM · FastAPI · Uvicorn · Docker (SHAP analysis: `shap`, `matplotlib`)
 
 ---
-_Group 9 project._
